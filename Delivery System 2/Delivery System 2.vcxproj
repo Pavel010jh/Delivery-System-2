@@ -125,11 +125,13 @@
   <ItemGroup>
     <ClCompile Include="address.cpp" />
     <ClCompile Include="client.cpp" />
+    <ClCompile Include="courier.cpp" />
     <ClCompile Include="Delivery System 2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="address.h" />
     <ClInclude Include="client.h" />
+    <ClInclude Include="courier.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

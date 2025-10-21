@@ -24,12 +24,18 @@
     <ClCompile Include="client.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
+    <ClCompile Include="courier.cpp">
+      <Filter>Файлы ресурсов</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="address.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="client.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="courier.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
