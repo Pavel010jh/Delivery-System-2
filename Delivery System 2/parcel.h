@@ -4,10 +4,13 @@ using namespace std;
 
 class Parcel {
 public:
+	// Конструкторы
 	Parcel(const string& description, double weight, double lenght, double width, double height, double estimatedValue);
-
+	
+	// Методы
 	double calculateVolume() const;
 
+	// Геттеры
 	string getDescription() const { return m_description; }
 	double getWeight() const { return m_weight; }
 	double getLenght() const { return m_lenght; }

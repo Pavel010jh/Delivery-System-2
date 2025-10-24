@@ -10,17 +10,21 @@ using namespace std;
 
 class DeliverySystem {
 public:
+	// Конструктор и деструктор
 	DeliverySystem();
 	~DeliverySystem();
 
+	// Основные методы
 	Order* createOrder(Client* sender, Client* receiver, const Address& from, const Address& to, const Parcel& parcel, Tariff* tariff);
 
 	vector<Order*> findOrdersByStatus(OrderStatus status) const;
 
+	// Методы добавления сущностей
 	void addClient(Client* client);
 	void addCourier(Courier* courier);
 	void addTariff(Tariff* tariff);
 
+	// Геттеры
 	vector<Order*> getAllOrders() const { return m_allOrders; }
 
 private:

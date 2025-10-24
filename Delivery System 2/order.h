@@ -8,6 +8,7 @@ using namespace std;
 class Courier;
 class Tariff;
 
+// Статусы заказа
 enum class OrderStatus {
 	CREATED = 0,
 	IN_PROGRESS = 1,
@@ -18,10 +19,12 @@ class Order {
 public:
 	Order(const string& trackingNumber, const Address& fromAddress, const Address& toAddress, const Parcel& parcel, Tariff* tariff);
 
+	// Методы
 	void updateStatus(OrderStatus newStatus);
 	void assignCourier(Courier* courier);
 	void calculateFinalCost();
 
+	// Геттеры
 	string getTrackingNumber() const { return m_trackingNumber; }
 	OrderStatus getStatus() const { return m_status; }
 	double getFinalCost() const { return m_finalCost; }

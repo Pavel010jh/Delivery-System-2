@@ -10,8 +10,10 @@ class Courier {
 public:
 	Courier(int id, const string& name, const string& phoneNumber, const string& vehicleType, bool isAvailable);
 
+	// Методы
 	bool assignOrder(Order* order);
 
+	// Геттеры
 	int getId() const { return m_id; }
 	string getName() const { return m_name; }
 	string getPhoneNumber() const { return m_phoneNumber; }

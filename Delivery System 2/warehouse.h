@@ -11,8 +11,10 @@ class Warehouse {
 public:
 	Warehouse(int id, const Address& address, const string& phoneNumber);
 
+	// Методы
 	void receiveOrder(Order* order);
 
+	// Геттеры
 	int getId() const { return m_id; }
 	Address getAddress() const { return m_address; }
 	string getPhoneNumber() const { return m_phoneNumber; }

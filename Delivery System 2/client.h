@@ -10,9 +10,11 @@ class Client {
 public:
 	Client(int id, const string& name, const string& phoneNumber, const string& email);
 
+	// Методы
 	void addAddress(const Address& newAddress);
 	void addToHistory(Order* order);
 
+	// Геттеры
 	int getId() const { return m_id; }
 	string getName() const { return m_name; }
 	string getPhoneNumber() const { return m_phoneNumber; }
