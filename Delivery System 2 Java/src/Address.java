@@ -6,8 +6,6 @@ public class Address {
     private String postalCode;
 
     // Конструкторы
-    public Address() {}
-
     public Address(String street, String city, String postalCode) {
         this.street = street;
         this.city = city;
