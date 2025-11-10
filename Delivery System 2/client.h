@@ -13,6 +13,15 @@ public:
 
 	Client(const Client& other);
 
+	// Оператор присваивания
+	Client& operator=(const Client& other);
+
+	// Методы для работы со строками
+	std::string getFullInfo() const;
+	bool hasEmailDomain(const std::string& domain) const;
+	std::string getFormattedPhone() const;
+	std::vector<std::string> getAddressLines() const;
+
 	// Методы
 	void addAddress(const Address& newAddress);
 	void addToHistory(std::shared_ptr<Order> order);

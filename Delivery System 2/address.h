@@ -9,8 +9,17 @@ public:
 	Address() = default;
 	Address(const string& street, const string& city, const string& postalCode);
 	
-	// Методы
-	string getFullAddress() const;
+	// Конструктор копирования
+	Address(const Address& other);
+
+	// Оператор присваивания
+	Address& operator=(const Address& other);
+
+	// Методы для работы со строками
+	std::string getFullAddress() const;
+	bool contains(const std::string& searchText) const;
+	std::string toUpperCase() const;
+	std::string getCityDistrict() const;
 
 	// Геттеры
 	string getStreet() const { return m_street; }

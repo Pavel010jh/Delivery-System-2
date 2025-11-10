@@ -20,6 +20,17 @@ class Order {
 public:
 	Order(const std::string& trackingNumber, const Address& fromAddress, const Address& toAddress, const Parcel& parcel, Tariff* tariff);
 
+	// Конструктор копирования
+	Order(const Order& other);
+
+	// Оператор присваивания
+	Order& operator=(const Order& other);
+
+	// Методы для работы со строками
+	std::string getStatusString() const;
+	std::string getDetailedInfo() const;
+	bool trackingNumberStartsWith(const std::string& prefix) const;
+
 	// Методы
 	void updateStatus(OrderStatus newStatus);
 	void assignCourier(std::shared_ptr<Courier> courier);

@@ -7,6 +7,17 @@ public:
 	// Конструкторы
 	Parcel(const string& description, double weight, double lenght, double width, double height, double estimatedValue);
 	
+	// Конструктор копирования
+	Parcel(const Parcel& other);
+
+	// Оператор присваивания
+	Parcel& operator=(const Parcel& other);
+
+	// Методы для работы со строками
+	std::string getFullDescription() const;
+	std::string getSizeCategory() const;
+	bool descriptionContains(const std::string& keyword) const;
+
 	// Методы
 	double calculateVolume() const;
 

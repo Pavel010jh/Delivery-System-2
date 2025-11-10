@@ -1,8 +1,9 @@
-#include "order.h"
+п»ї#include "order.h"
 #include "courier.h"
 #include "tariff.h"
+#include <sstream>
 
-// Конструктор заказа
+// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ Р·Р°РєР°Р·Р°
 Order::Order(const std::string& trackingNumber, const Address& fromAddress, const Address& toAddress, const Parcel& parcel, Tariff* tariff)
 	: m_trackingNumber(trackingNumber), m_status(OrderStatus::CREATED),
 	m_finalCost(0.0), m_fromAddress(fromAddress), m_toAddress(toAddress),
@@ -11,12 +12,68 @@ Order::Order(const std::string& trackingNumber, const Address& fromAddress, cons
 	calculateFinalCost();
 }
 
-// Обновление статуса заказа
+// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєРѕРїРёСЂРѕРІР°РЅРёСЏ
+Order::Order(const Order& other)
+    : m_trackingNumber(other.m_trackingNumber), m_status(other.m_status),
+    m_finalCost(other.m_finalCost), m_fromAddress(other.m_fromAddress),
+    m_toAddress(other.m_toAddress), m_parcel(other.m_parcel),
+    m_assignedCourier(other.m_assignedCourier), m_chosenTariff(other.m_chosenTariff) {
+}
+
+// РћРїРµСЂР°С‚РѕСЂ РїСЂРёСЃРІР°РёРІР°РЅРёСЏ
+Order& Order::operator=(const Order& other) {
+    if (this != &other) {
+        m_trackingNumber = other.m_trackingNumber;
+        m_status = other.m_status;
+        m_finalCost = other.m_finalCost;
+        m_fromAddress = other.m_fromAddress;
+        m_toAddress = other.m_toAddress;
+        m_parcel = other.m_parcel;
+        m_assignedCourier = other.m_assignedCourier;
+        m_chosenTariff = other.m_chosenTariff;
+    }
+    return *this;
+}
+
+// РЎС‚СЂРѕРєРѕРІРѕРµ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ СЃС‚Р°С‚СѓСЃР°
+std::string Order::getStatusString() const {
+    switch (m_status) {
+    case OrderStatus::CREATED: return "РЎРѕР·РґР°РЅ";
+    case OrderStatus::IN_PROGRESS: return "Р’ РїСЂРѕС†РµСЃСЃРµ РґРѕСЃС‚Р°РІРєРё";
+    case OrderStatus::DELIVERED: return "Р”РѕСЃС‚Р°РІР»РµРЅ";
+    default: return "РќРµРёР·РІРµСЃС‚РµРЅ";
+    }
+}
+
+// РџРѕРґСЂРѕР±РЅР°СЏ РёРЅС„РѕСЂРјР°С†РёСЏ Рѕ Р·Р°РєР°Р·Рµ
+std::string Order::getDetailedInfo() const {
+    std::stringstream ss;
+    ss << "Р—Р°РєР°Р· #" << m_trackingNumber << "\n"
+        << "РЎС‚Р°С‚СѓСЃ: " << getStatusString() << "\n"
+        << "РЎС‚РѕРёРјРѕСЃС‚СЊ: " << m_finalCost << " СЂСѓР±.\n"
+        << "РћС‚: " << m_fromAddress.getFullAddress() << "\n"
+        << "РљРѕРјСѓ: " << m_toAddress.getFullAddress() << "\n"
+        << "РџРѕСЃС‹Р»РєР°: " << m_parcel.getDescription()
+        << " (" << m_parcel.calculateVolume() << " СЃРјВі)";
+
+    if (m_assignedCourier) {
+        ss << "\nРљСѓСЂСЊРµСЂ: " << m_assignedCourier->getName();
+    }
+
+    return ss.str();
+}
+
+// РџСЂРѕРІРµСЂРєР° РїСЂРµС„РёРєСЃР° С‚СЂРµРє-РЅРѕРјРµСЂР°
+bool Order::trackingNumberStartsWith(const std::string& prefix) const {
+    return m_trackingNumber.find(prefix) == 0;
+}
+
+// РћР±РЅРѕРІР»РµРЅРёРµ СЃС‚Р°С‚СѓСЃР° Р·Р°РєР°Р·Р°
 void Order::updateStatus(OrderStatus newStatus) {
 	m_status = newStatus;
 }
 
-// Назначение курьера на заказ
+// РќР°Р·РЅР°С‡РµРЅРёРµ РєСѓСЂСЊРµСЂР° РЅР° Р·Р°РєР°Р·
 void Order::assignCourier(std::shared_ptr<Courier> courier) {
 	if (courier && courier->assignOrder(std::make_shared<Order>(*this))) {
 		m_assignedCourier = courier;
@@ -24,24 +81,24 @@ void Order::assignCourier(std::shared_ptr<Courier> courier) {
 	}
 }
 
-// Расчет итоговой стоимости
+// Р Р°СЃС‡РµС‚ РёС‚РѕРіРѕРІРѕР№ СЃС‚РѕРёРјРѕСЃС‚Рё
 void Order::calculateFinalCost() {
 	if (m_chosenTariff) {
 		m_finalCost = m_chosenTariff->calculateCost(m_parcel, m_fromAddress, m_toAddress);
 	}
 }
 
-// Перегрузка оператора < (сравнение по стоимости)
+// РџРµСЂРµРіСЂСѓР·РєР° РѕРїРµСЂР°С‚РѕСЂР° < (СЃСЂР°РІРЅРµРЅРёРµ РїРѕ СЃС‚РѕРёРјРѕСЃС‚Рё)
 bool Order::operator<(const Order& other) const {
     return m_finalCost < other.m_finalCost;
 }
 
-// Перегрузка оператора > (сравнение по стоимости)
+// РџРµСЂРµРіСЂСѓР·РєР° РѕРїРµСЂР°С‚РѕСЂР° > (СЃСЂР°РІРЅРµРЅРёРµ РїРѕ СЃС‚РѕРёРјРѕСЃС‚Рё)
 bool Order::operator>(const Order& other) const {
     return m_finalCost > other.m_finalCost;
 }
 
-// Префиксный инкремент (переход к следующему статусу)
+// РџСЂРµС„РёРєСЃРЅС‹Р№ РёРЅРєСЂРµРјРµРЅС‚ (РїРµСЂРµС…РѕРґ Рє СЃР»РµРґСѓСЋС‰РµРјСѓ СЃС‚Р°С‚СѓСЃСѓ)
 Order& Order::operator++() {
     switch (m_status) {
     case OrderStatus::CREATED:
@@ -56,7 +113,7 @@ Order& Order::operator++() {
     return *this;
 }
 
-// Постфиксный инкремент (переход к следующему статусу)
+// РџРѕСЃС‚С„РёРєСЃРЅС‹Р№ РёРЅРєСЂРµРјРµРЅС‚ (РїРµСЂРµС…РѕРґ Рє СЃР»РµРґСѓСЋС‰РµРјСѓ СЃС‚Р°С‚СѓСЃСѓ)
 Order Order::operator++(int) {
     Order temp = *this;
     ++(*this);
