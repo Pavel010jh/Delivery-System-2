@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <memory>
 #include "address.h"
 #include "parcel.h"
 
@@ -17,26 +18,26 @@ enum class OrderStatus {
 
 class Order {
 public:
-	Order(const string& trackingNumber, const Address& fromAddress, const Address& toAddress, const Parcel& parcel, Tariff* tariff);
+	Order(const std::string& trackingNumber, const Address& fromAddress, const Address& toAddress, const Parcel& parcel, Tariff* tariff);
 
 	// Методы
 	void updateStatus(OrderStatus newStatus);
-	void assignCourier(Courier* courier);
+	void assignCourier(std::shared_ptr<Courier> courier);
 	void calculateFinalCost();
 
 	// Геттеры
-	string getTrackingNumber() const { return m_trackingNumber; }
+	std::string getTrackingNumber() const { return m_trackingNumber; }
 	OrderStatus getStatus() const { return m_status; }
 	double getFinalCost() const { return m_finalCost; }
-	Courier* getAssignedCourier() const { return m_assignedCourier; }
+	std::shared_ptr<Courier> getAssignedCourier() const { return m_assignedCourier; }
 
 private:
-	string m_trackingNumber;
+	std::string m_trackingNumber;
 	OrderStatus m_status;
 	double m_finalCost;
 	Address m_fromAddress;
 	Address m_toAddress;
 	Parcel m_parcel;
-	Courier* m_assignedCourier;
+	std::shared_ptr<Courier> m_assignedCourier;
 	Tariff* m_chosenTariff;
 };

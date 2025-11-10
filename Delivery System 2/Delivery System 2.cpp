@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <locale.h>
 #include <iomanip>
+#include <memory>
 #include "address.h"
 #include "parcel.h"
 #include "client.h"

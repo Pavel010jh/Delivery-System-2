@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <memory>
 #include "order.h"
 #include "client.h"
 #include "courier.h"
@@ -15,23 +16,23 @@ public:
 	~DeliverySystem();
 
 	// Основные методы
-	Order* createOrder(Client* sender, Client* receiver, const Address& from, const Address& to, const Parcel& parcel, Tariff* tariff);
+	std::shared_ptr<Order> createOrder(std::shared_ptr<Client> sender, std::shared_ptr<Client> receiver, const Address& from, const Address& to, const Parcel& parcel, std::shared_ptr<Tariff> tariff);
 
-	vector<Order*> findOrdersByStatus(OrderStatus status) const;
+	std::vector < std::shared_ptr<Order>> findOrdersByStatus(OrderStatus status) const;
 
 	// Методы добавления сущностей
-	void addClient(Client* client);
-	void addCourier(Courier* courier);
-	void addTariff(Tariff* tariff);
+	void addClient(std::shared_ptr<Client> client);
+	void addCourier(std::shared_ptr<Courier> courier);
+	void addTariff(std::shared_ptr<Tariff> tariff);
 
 	// Геттеры
-	vector<Order*> getAllOrders() const { return m_allOrders; }
+	std::vector<std::shared_ptr<Order>> getAllOrders() const { return m_allOrders; }
 
 private:
-	vector<Order*> m_allOrders;
-	vector<Courier*> m_allCouriers;
-	vector<Client*> m_allClients;
-	vector<Warehouse*> m_allWarehouses;
-	vector<Tariff*> m_availableTariffs;
+	std::vector<std::shared_ptr<Order>> m_allOrders;
+	std::vector<std::shared_ptr<Courier>> m_allCouriers;
+	std::vector<std::shared_ptr<Client>> m_allClients;
+	std::vector<std::shared_ptr<Warehouse>> m_allWarehouses;
+	std::vector<std::shared_ptr<Tariff>> m_availableTariffs;
 	static int m_orderCounter;
 };
