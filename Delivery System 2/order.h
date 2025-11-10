@@ -25,6 +25,12 @@ public:
 	void assignCourier(std::shared_ptr<Courier> courier);
 	void calculateFinalCost();
 
+	// Перегрузка операторов
+	bool operator<(const Order& other) const;
+	bool operator>(const Order& other) const;
+	Order& operator++();    // Префиксный инкремент
+	Order operator++(int);  // Постфиксный инкремент
+
 	// Геттеры
 	std::string getTrackingNumber() const { return m_trackingNumber; }
 	OrderStatus getStatus() const { return m_status; }

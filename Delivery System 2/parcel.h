@@ -10,6 +10,10 @@ public:
 	// Методы
 	double calculateVolume() const;
 
+	// Перегрузка операторов
+	bool operator==(const Parcel& other) const;
+	Parcel operator+(const Parcel& other) const; // Объединение посылок
+
 	// Геттеры
 	string getDescription() const { return m_description; }
 	double getWeight() const { return m_weight; }

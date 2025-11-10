@@ -30,3 +30,35 @@ void Order::calculateFinalCost() {
 		m_finalCost = m_chosenTariff->calculateCost(m_parcel, m_fromAddress, m_toAddress);
 	}
 }
+
+// Перегрузка оператора < (сравнение по стоимости)
+bool Order::operator<(const Order& other) const {
+    return m_finalCost < other.m_finalCost;
+}
+
+// Перегрузка оператора > (сравнение по стоимости)
+bool Order::operator>(const Order& other) const {
+    return m_finalCost > other.m_finalCost;
+}
+
+// Префиксный инкремент (переход к следующему статусу)
+Order& Order::operator++() {
+    switch (m_status) {
+    case OrderStatus::CREATED:
+        m_status = OrderStatus::IN_PROGRESS;
+        break;
+    case OrderStatus::IN_PROGRESS:
+        m_status = OrderStatus::DELIVERED;
+        break;
+    case OrderStatus::DELIVERED:
+        break;
+    }
+    return *this;
+}
+
+// Постфиксный инкремент (переход к следующему статусу)
+Order Order::operator++(int) {
+    Order temp = *this;
+    ++(*this);
+    return temp;
+}

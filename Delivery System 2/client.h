@@ -11,9 +11,16 @@ class Client {
 public:
 	Client(int id, const std::string& name, const std::string& phoneNumber, const std::string& email);
 
+	Client(const Client& other);
+
 	// Методы
 	void addAddress(const Address& newAddress);
 	void addToHistory(std::shared_ptr<Order> order);
+
+	// Перегрузка операторов
+	bool operator==(const Client& other) const;
+	bool operator!=(const Client& other) const;
+	Client& operator+=(const Address& address);
 
 	// Геттеры
 	int getId() const { return m_id; }
