@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <memory>
+#include <stdexcept>
 #include "order.h"
 #include "client.h"
 #include "courier.h"
@@ -15,10 +16,15 @@ public:
 	DeliverySystem();
 	~DeliverySystem();
 
-	// Основные методы
+	// Основные методы с обработкой исключений
 	std::shared_ptr<Order> createOrder(std::shared_ptr<Client> sender, std::shared_ptr<Client> receiver, const Address& from, const Address& to, const Parcel& parcel, std::shared_ptr<Tariff> tariff);
 
 	std::vector < std::shared_ptr<Order>> findOrdersByStatus(OrderStatus status) const;
+
+	// Методы с исключениями
+	std::shared_ptr<Client> findClientById(int id) const;
+	std::shared_ptr<Courier> findAvailableCourier() const;
+	void validateOrderData(const Address& from, const Address& to, const Parcel& parcel) const;
 
 	// Статические методы
 	static int getGlobalOrderCount() { return s_globalOrderCount; }
@@ -48,4 +54,33 @@ private:
 	// Статические поля
 	static int s_globalOrderCount;
 	static const std::string s_systemVersion;
+
+	// Пользовательские классы исключений
+	class InvalidAddressException : public std::runtime_error {
+	public:
+		InvalidAddressException(const std::string& message) : std::runtime_error(message) {}
+	};
+
+	class InvalidParcelException : public std::runtime_error {
+	public:
+		InvalidParcelException(const std::string& message) : std::runtime_error(message) {}
+	};
+
+	class ClientNotFoundException : public std::runtime_error {
+	public:
+		ClientNotFoundException(const std::string& message) : std::runtime_error(message) {}
+	};
+
+	class NoAvailableCourierException : public std::runtime_error {
+	public:
+		NoAvailableCourierException(const std::string& message) : std::runtime_error(message) {}
+	};
+
+	class OrderCreationException : public std::runtime_error {
+	public:
+		OrderCreationException(const std::string& message) : std::runtime_error(message) {}
+
+		OrderCreationException(const std::string& message, const std::exception& cause)
+			: std::runtime_error(message + ": " + cause.what()) {}
+	};
 };

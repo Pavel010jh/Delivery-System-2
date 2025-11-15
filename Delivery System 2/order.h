@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
+#include <stdexcept>
 #include "address.h"
 #include "parcel.h"
 
@@ -31,10 +32,11 @@ public:
 	std::string getDetailedInfo() const;
 	bool trackingNumberStartsWith(const std::string& prefix) const;
 
-	// Методы
+	// Методы с обработкой исключений
 	void updateStatus(OrderStatus newStatus);
 	void assignCourier(std::shared_ptr<Courier> courier);
 	void calculateFinalCost();
+	void validateOrder() const;
 
 	// Статические методы и поля
 	static int getTotalOrdersCreated() { return s_totalOrdersCreated; }
@@ -70,4 +72,17 @@ private:
 	// Статические поля
 	static int s_totalOrdersCreated;
 	static double s_totalRevenue;
+	// Вспомогательные методы
+	std::string getStatusString() const;
+};
+
+// Пользовательские исключения для Order
+class InvalidOrderException : public std::runtime_error {
+public:
+	InvalidOrderException(const std::string& message) : std::runtime_error(message) {}
+};
+
+class OrderStatusException : public std::runtime_error {
+public:
+	OrderStatusException(const std::string& message) : std::runtime_error(message) {}
 };

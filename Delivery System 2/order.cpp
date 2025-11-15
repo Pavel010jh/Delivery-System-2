@@ -14,6 +14,8 @@ Order::Order(const std::string& trackingNumber, const Address& fromAddress, cons
 	m_finalCost(0.0), m_fromAddress(fromAddress), m_toAddress(toAddress),
 	m_parcel(parcel), m_assignedCourier(nullptr), m_chosenTariff(tariff)
 {
+    // Валидация при создании
+    validateOrder();
 	calculateFinalCost();
     // Обновляем статические поля
     s_totalOrdersCreated++;
@@ -49,6 +51,25 @@ Order& Order::operator=(const Order& other) {
     return *this;
 }
 
+// Валидация заказа
+void Order::validateOrder() const {
+    if (m_trackingNumber.empty()) {
+        throw InvalidOrderException("Трек-номер не может быть пустым");
+    }
+
+    if (m_trackingNumber.find("TRK") != 0) {
+        throw InvalidOrderException("Трек-номер должен начинаться с 'TRK'");
+    }
+
+    if (!m_chosenTariff) {
+        throw InvalidOrderException("Не выбран тариф для заказа");
+    }
+
+    if (m_finalCost < 0) {
+        throw InvalidOrderException("Стоимость заказа не может быть отрицательной");
+    }
+}
+
 // Сброс статистики
 void Order::resetStatistics() {
     s_totalOrdersCreated = 0;
@@ -77,51 +98,73 @@ std::string Order::getStatusString() const {
     }
 }
 
-// Подробная информация о заказе
-std::string Order::getDetailedInfo() const {
-    std::stringstream ss;
-    ss << "Заказ #" << m_trackingNumber << "\n"
-        << "Статус: " << getStatusString() << "\n"
-        << "Стоимость: " << m_finalCost << " руб.\n"
-        << "От: " << m_fromAddress.getFullAddress() << "\n"
-        << "Кому: " << m_toAddress.getFullAddress() << "\n"
-        << "Посылка: " << m_parcel.getDescription()
-        << " (" << m_parcel.calculateVolume() << " см³)";
 
-    if (m_assignedCourier) {
-        ss << "\nКурьер: " << m_assignedCourier->getName();
-    }
-
-    return ss.str();
-}
 
 // Проверка префикса трек-номера
 bool Order::trackingNumberStartsWith(const std::string& prefix) const {
     return m_trackingNumber.find(prefix) == 0;
 }
 
-// Обновление статуса заказа
+// Обновление статуса заказа с проверками
 void Order::updateStatus(OrderStatus newStatus) {
-	m_status = newStatus;
+    // Проверка валидности перехода статусов
+    if (m_status == OrderStatus::DELIVERED && newStatus != OrderStatus::DELIVERED) {
+        throw OrderStatusException("Нельзя изменить статус доставленного заказа");
+    }
+
+    if (m_status == OrderStatus::CREATED && newStatus == OrderStatus::DELIVERED) {
+        throw OrderStatusException("Нельзя пометить заказ как доставленный без процесса доставки");
+    }
+
+    m_status = newStatus;
 }
 
-// Назначение курьера на заказ
+// Назначение курьера на заказ с проверками
 void Order::assignCourier(std::shared_ptr<Courier> courier) {
-	if (courier && courier->assignOrder(std::make_shared<Order>(*this))) {
-		m_assignedCourier = courier;
-		updateStatus(OrderStatus::IN_PROGRESS);
-	}
+    if (!courier) {
+        throw std::invalid_argument("Курьер не может быть пустым");
+    }
+
+    if (m_status != OrderStatus::CREATED) {
+        throw OrderStatusException("Можно назначать курьера только для созданных заказов");
+    }
+
+    if (!courier->getIsAvailable()) {
+        throw OrderStatusException("Курьер недоступен для назначения");
+    }
+
+    if (courier->assignOrder(std::make_shared<Order>(*this))) {
+        m_assignedCourier = courier;
+        updateStatus(OrderStatus::IN_PROGRESS);
+    }
+    else {
+        throw OrderStatusException("Не удалось назначить курьера на заказ");
+    }
 }
 
-// Расчет итоговой стоимости
+// Расчет итоговой стоимости с обработкой ошибок
 void Order::calculateFinalCost() {
-	if (m_chosenTariff) {
-        // Обновляем общую выручку (вычитаем старую стоимость, добавляем новую)
-        s_totalRevenue -= m_finalCost;
-		m_finalCost = m_chosenTariff->calculateCost(m_parcel, m_fromAddress, m_toAddress);
+    try {
+        if (m_chosenTariff) {
+            // Обновляем общую выручку (вычитаем старую стоимость, добавляем новую)
+            s_totalRevenue -= m_finalCost;
+            m_finalCost = m_chosenTariff->calculateCost(m_parcel, m_fromAddress, m_toAddress);
+            s_totalRevenue += m_finalCost;
+            if (m_finalCost < 0) {
+                throw std::logic_error("Рассчитанная стоимость не может быть отрицательной");
+            }
+        }
+        else {
+            throw std::logic_error("Не выбран тариф для расчета стоимости");
+        }
+    }
+    catch (const std::exception& e) {
+        // Восстанавливаем предыдущее значение выручки
         s_totalRevenue += m_finalCost;
-	}
+        throw InvalidOrderException(std::string("Ошибка расчета стоимости: ") + e.what());
+    }
 }
+
 
 // Перегрузка оператора < (сравнение по стоимости)
 bool Order::operator<(const Order& other) const {
@@ -135,15 +178,21 @@ bool Order::operator>(const Order& other) const {
 
 // Префиксный инкремент (переход к следующему статусу)
 Order& Order::operator++() {
-    switch (m_status) {
-    case OrderStatus::CREATED:
-        m_status = OrderStatus::IN_PROGRESS;
-        break;
-    case OrderStatus::IN_PROGRESS:
-        m_status = OrderStatus::DELIVERED;
-        break;
-    case OrderStatus::DELIVERED:
-        break;
+    try {
+        switch (m_status) {
+        case OrderStatus::CREATED:
+            updateStatus(OrderStatus::IN_PROGRESS);
+            break;
+        case OrderStatus::IN_PROGRESS:
+            updateStatus(OrderStatus::DELIVERED);
+            break;
+        case OrderStatus::DELIVERED:
+            break;
+        }
+    }
+    catch (const OrderStatusException& e) {
+        std::cerr << "Ошибка при изменении статуса: " << e.what() << std::endl;
+        throw;
     }
     return *this;
 }
