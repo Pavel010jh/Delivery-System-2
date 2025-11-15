@@ -2,6 +2,11 @@
 #include "courier.h"
 #include "tariff.h"
 #include <sstream>
+#include <iostream>
+
+// Инициализация статических полей
+int Order::s_totalOrdersCreated = 0;
+double Order::s_totalRevenue = 0.0;
 
 // Конструктор заказа
 Order::Order(const std::string& trackingNumber, const Address& fromAddress, const Address& toAddress, const Parcel& parcel, Tariff* tariff)
@@ -10,6 +15,9 @@ Order::Order(const std::string& trackingNumber, const Address& fromAddress, cons
 	m_parcel(parcel), m_assignedCourier(nullptr), m_chosenTariff(tariff)
 {
 	calculateFinalCost();
+    // Обновляем статические поля
+    s_totalOrdersCreated++;
+    s_totalRevenue += m_finalCost;
 }
 
 // Конструктор копирования
@@ -18,11 +26,15 @@ Order::Order(const Order& other)
     m_finalCost(other.m_finalCost), m_fromAddress(other.m_fromAddress),
     m_toAddress(other.m_toAddress), m_parcel(other.m_parcel),
     m_assignedCourier(other.m_assignedCourier), m_chosenTariff(other.m_chosenTariff) {
+    s_totalOrdersCreated++;
+    s_totalRevenue += m_finalCost;
 }
 
 // Оператор присваивания
 Order& Order::operator=(const Order& other) {
     if (this != &other) {
+        // Вычитаем старую стоимость из общей выручки
+        s_totalRevenue -= m_finalCost;
         m_trackingNumber = other.m_trackingNumber;
         m_status = other.m_status;
         m_finalCost = other.m_finalCost;
@@ -31,8 +43,28 @@ Order& Order::operator=(const Order& other) {
         m_parcel = other.m_parcel;
         m_assignedCourier = other.m_assignedCourier;
         m_chosenTariff = other.m_chosenTariff;
+        // Добавляем новую стоимость в общую выручку
+        s_totalRevenue += m_finalCost;
     }
     return *this;
+}
+
+// Сброс статистики
+void Order::resetStatistics() {
+    s_totalOrdersCreated = 0;
+    s_totalRevenue = 0.0;
+}
+
+// Вывод информации о заказе с использованием this
+void Order::printOrderInfo() const {
+    std::cout << "Информация о заказе (через this):" << std::endl;
+    std::cout << "  Трек номер: " << this->m_trackingNumber << std::endl;
+    std::cout << "  Статус: " << this->getStatusString() << std::endl;
+    std::cout << "  Стоимость: " << this->m_finalCost << " руб." << std::endl;
+
+    if (this->m_assignedCourier) {
+        std::cout << "  Курьер: " << this->m_assignedCourier->getName() << std::endl;
+    }
 }
 
 // Строковое представление статуса
@@ -84,7 +116,10 @@ void Order::assignCourier(std::shared_ptr<Courier> courier) {
 // Расчет итоговой стоимости
 void Order::calculateFinalCost() {
 	if (m_chosenTariff) {
+        // Обновляем общую выручку (вычитаем старую стоимость, добавляем новую)
+        s_totalRevenue -= m_finalCost;
 		m_finalCost = m_chosenTariff->calculateCost(m_parcel, m_fromAddress, m_toAddress);
+        s_totalRevenue += m_finalCost;
 	}
 }
 

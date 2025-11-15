@@ -36,6 +36,16 @@ public:
 	void assignCourier(std::shared_ptr<Courier> courier);
 	void calculateFinalCost();
 
+	// Статические методы и поля
+	static int getTotalOrdersCreated() { return s_totalOrdersCreated; }
+	static double getTotalRevenue() { return s_totalRevenue; }
+	static void resetStatistics();
+
+	// Использование this
+	Order* getThisPointer() { return this; }
+	const Order* getThisPointer() const { return this; }
+	void printOrderInfo() const;
+
 	// Перегрузка операторов
 	bool operator<(const Order& other) const;
 	bool operator>(const Order& other) const;
@@ -57,4 +67,7 @@ private:
 	Parcel m_parcel;
 	std::shared_ptr<Courier> m_assignedCourier;
 	Tariff* m_chosenTariff;
+	// Статические поля
+	static int s_totalOrdersCreated;
+	static double s_totalRevenue;
 };

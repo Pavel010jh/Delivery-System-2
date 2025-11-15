@@ -20,6 +20,16 @@ public:
 
 	std::vector < std::shared_ptr<Order>> findOrdersByStatus(OrderStatus status) const;
 
+	// Статические методы
+	static int getGlobalOrderCount() { return s_globalOrderCount; }
+	static std::string getSystemVersion() { return s_systemVersion; }
+	static void incrementGlobalOrderCount() { s_globalOrderCount++; }
+
+	// Использование this
+	DeliverySystem* getSystemInstance() { return this; }
+	const DeliverySystem* getSystemInstance() const { return this; }
+	void printSystemInfo() const;
+
 	// Методы добавления сущностей
 	void addClient(std::shared_ptr<Client> client);
 	void addCourier(std::shared_ptr<Courier> courier);
@@ -35,4 +45,7 @@ private:
 	std::vector<std::shared_ptr<Warehouse>> m_allWarehouses;
 	std::vector<std::shared_ptr<Tariff>> m_availableTariffs;
 	static int m_orderCounter;
+	// Статические поля
+	static int s_globalOrderCount;
+	static const std::string s_systemVersion;
 };
