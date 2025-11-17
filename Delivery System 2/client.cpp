@@ -5,7 +5,7 @@
 
 // Конструктор
 Client::Client(int id, const std::string& name, const std::string& phoneNumber, const std::string& email)
-	: m_id(m_id), m_name(name), m_phoneNumber(phoneNumber), m_email(m_email) {
+	: m_id(id), m_name(name), m_phoneNumber(phoneNumber), m_email(email) {
 }
 
 // Конструктор копирования (базовый)

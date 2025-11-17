@@ -31,7 +31,7 @@ Parcel& Parcel::operator=(const Parcel& other) {
 std::string Parcel::getFullDescription() const {
     std::stringstream ss;
     ss << m_description << " | Вес: " << m_weight << " кг | "
-        << "Объем: " << calculateVolume() << " см³ | "
+        << "Объем: " << calculateVolume() << " см^3 | "
         << "Стоимость: " << m_estimatedValue << " руб.";
     return ss.str();
 }

@@ -29,7 +29,6 @@ public:
 
 	// Методы для работы со строками
 	std::string getStatusString() const;
-	std::string getDetailedInfo() const;
 	bool trackingNumberStartsWith(const std::string& prefix) const;
 
 	// Методы с обработкой исключений
@@ -72,8 +71,6 @@ private:
 	// Статические поля
 	static int s_totalOrdersCreated;
 	static double s_totalRevenue;
-	// Вспомогательные методы
-	std::string getStatusString() const;
 };
 
 // Пользовательские исключения для Order
