@@ -11,6 +11,10 @@ public class DeliverySystem {
     private List<Tariff> availableTariffs;
     private static int orderCounter = 0;
 
+    // Статические поля
+    private static int globalOrderCount = 0;
+    private static final String SYSTEM_VERSION = "1.0.0";
+
     // Конструктор
     public DeliverySystem() {
         this.allOrders = new ArrayList<>();
@@ -18,6 +22,37 @@ public class DeliverySystem {
         this.allClients = new ArrayList<>();
         this.allWarehouses = new ArrayList<>();
         this.availableTariffs = new ArrayList<>();
+    }
+
+        // Статические методы
+    public static int getGlobalOrderCount() {
+        return globalOrderCount;
+    }
+    
+    public static String getSystemVersion() {
+        return SYSTEM_VERSION;
+    }
+    
+    public static void incrementGlobalOrderCount() {
+        globalOrderCount++;
+    }
+    
+    public static void resetGlobalStatistics() {
+        globalOrderCount = 0;
+    }
+
+    // Метод с использованием this
+    public DeliverySystem getSystemInstance() {
+        return this;
+    }
+    
+    public void printSystemInfo() {
+        System.out.println("=== System Information (using this) ===");
+        System.out.println("Version: " + DeliverySystem.getSystemVersion());
+        System.out.println("Total orders in this system: " + this.allOrders.size());
+        System.out.println("Total clients: " + this.allClients.size());
+        System.out.println("Total couriers: " + this.allCouriers.size());
+        System.out.println("Global order count: " + DeliverySystem.getGlobalOrderCount());
     }
 
     // Основные методы
@@ -31,6 +66,9 @@ public class DeliverySystem {
             sender.addToHistory(newOrder);
         }
         
+        // Увеличиваем глобальный счетчик
+        incrementGlobalOrderCount();
+
         return newOrder;
     }
 
