@@ -13,81 +13,154 @@ public class Main {
         }
     }
     public static void main(String[] args) {
-        // Устанавливаем локаль для корректного отображения русских символов
         Locale.setDefault(new Locale("ru", "RU"));
         
-        System.out.println("=== Демонстрация системы доставки ===");
+        System.out.println("=== ДЕМОНСТРАЦИЯ ===");
 
-        System.out.println("\n1. Статическая инициализация:");
-        Address address1 = new Address("ул. Ленина", "Москва", "101000");
-        Parcel parcel1 = new Parcel("Книги", 2.0, 30, 20, 10, 500);
-        System.out.println("Адрес: " + address1.getFullAddress());
-        System.out.println("Посылка: " + parcel1.getDescription() + 
-                         ", вес: " + parcel1.getWeight() + " кг" +
-                         ", объём: " + parcel1.calculateVolume() + "см^3" + 
-                         ", стоимость: " + parcel1.getEstimatedValue() + " руб.");
+        try {
+            System.out.println("1. ДЕМОНСТРАЦИЯ ИСПОЛЬЗОВАНИЯ OPERATOR THIS:");
+            
+            Client client1 = new Client(1, "Иван Иванов", "+79161112233", "ivan@mail.com");
+            
+            // Демонстрация this в методах
+            System.out.println("   - Client.printClientInfo() использует this для доступа к полям:");
+            client1.printClientInfo();
+            
+            System.out.println("   - Client.getCurrentClient() возвращает this:");
+            Client currentClient = client1.getCurrentClient();
+            System.out.println("     Текущий объект: " + currentClient.getName());
+            
+            // Демонстрация this в цепочке вызовов
+            System.out.println("   - Order.updateContactInfoAndReturn() возвращает this для цепочки:");
+            Order testOrder = new Order("TRKTEST", 
+                new Address("ул. Пушкина 1", "Москва", "101000"),
+                new Address("ул. Малахова 2", "Москва", "102000"),
+                new Parcel("Посылка", 1.0, 10, 10, 10, 100),
+                new ExpressTariff("Посылка", 100.0));
+            testOrder.updateContactInfoAndReturn().printOrderDetails();
 
-        System.out.println("\n2. Динамическая инициализация:");
-        Client client1 = new Client(1, "Иван Иванов", "+79161112233", "ivan@mail.com");
-        Courier courier1 = new Courier(1, "Пётр Петров", "+79061133233", "автомобиль", true);
-        System.out.println("Клиент: " + client1.getName() + 
-                         ", телефон: " + client1.getPhoneNumber() + 
-                         ", email: " + client1.getEmail());
-        System.out.println("Курьер: " + courier1.getName() + 
-                         ", транспорт: " + courier1.getVehicleType() + 
-                         ", доступен: " + (courier1.getIsAvailable() ? "да" : "нет"));
+            System.out.println("\n2. ДЕМОСТРАЦИЯ СТАТИЧЕСКИХ ПОЛЕЙ И МЕТОДОВ:");
+            
+            System.out.println("   - Статические поля до создания объектов:");
+            System.out.println("     Client.getClientCounter(): " + Client.getClientCounter());
+            System.out.println("     DeliverySystem.getGlobalOrderCount(): " + DeliverySystem.getGlobalOrderCount());
+            System.out.println("     DeliverySystem.getSystemVersion(): " + DeliverySystem.getSystemVersion());
+            
+            // Создаем объекты для демонстрации изменения статических счетчиков
+            Client client2 = new Client(2, "Петр Петров", "+79262223344", "petr@mail.com");
+            Client client3 = new Client(3, "Анна Сидорова", "+79363334455", "anna@mail.com");
+            
+            System.out.println("   - Статические поля после создания объектов:");
+            System.out.println("     Client.getClientCounter(): " + Client.getClientCounter());
+            System.out.println("     Client.canCreateMoreClients(): " + Client.canCreateMoreClients());
+            
+            DeliverySystem system = new DeliverySystem();
+            system.addClient(client1);
+            system.addClient(client2);
+            system.addClient(client3);
+            
+            // Создаем заказы для демонстрации глобального счетчика
+            ExpressTariff express = new ExpressTariff("Экспресс", 350.00);
+            Address from = new Address("ул. Отправления 10", "Москва", "101100");
+            Address to = new Address("ул. Доставки 20", "Москва", "101200");
+            Parcel parcel = new Parcel("Документы", 1.5, 35, 25, 5, 2000);
+            
+            Order order1 = system.createOrder(client1, client2, from, to, parcel, express);
+            Order order2 = system.createOrder(client2, client3, from, to, parcel, express);
+            
+            System.out.println("   - Статические поля после создания заказов:");
+            System.out.println("     DeliverySystem.getGlobalOrderCount(): " + DeliverySystem.getGlobalOrderCount());
+            
+            // Демонстрация статических методов в DeliverySystem
+            System.out.println("   - DeliverySystem.printSystemInfo() использует статические методы:");
+            system.printSystemInfo();
 
-        System.out.println("\n3. Работа с ссылками:");
-        Address address2 = new Address("ул. Пушкина", "Санкт-Петербург", "190000");
-        Address ref = address2;
-        System.out.println("Через ссылку: " + ref.getFullAddress());
+            System.out.println("\n3. ДЕМОНСТРАЦИЯ ОБРАБОТКИ ИСКЛЮЧЕНИЙ:");
+            
+            // 3.1 Try-catch блоки с пользовательскими исключениями
+            System.out.println("   3.1 Try-catch с пользовательскими исключениями:");
+            try {
+                Address invalidAddress = new Address("", "Москва", "101000");
+                system.createOrderWithValidation(client1, null, invalidAddress, to, parcel, express);
+            } catch (InvalidAddressException e) {
+                System.out.println("      Поймано InvalidAddressException: " + e.getMessage());
+            } catch (InvalidParcelException e) {
+                System.out.println("      Поймано InvalidParcelException: " + e.getMessage());
+            }
+            
+            // 3.2 Try-catch блоки с встроенными исключениями
+            System.out.println("\n   3.2 Try-catch с IllegalArgumentException:");
+            try {
+                Parcel invalidParcel = new Parcel("Невалидная", -5.0, 10, 10, 10, 100);
+                system.createOrderWithValidation(client1, null, from, to, invalidParcel, express);
+            } catch (InvalidParcelException e) {
+                System.out.println("      Поймано InvalidParcelException: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("      Поймано исключение: " + e.getMessage());
+            }
+            
+            // 3.3 Throw инструкции в конструкторах
+            System.out.println("\n   3.3 Throw в конструкторе Order:");
+            try {
+                Order invalidOrder = new Order("INVALID", null, to, parcel, express);
+            } catch (IllegalArgumentException e) {
+                System.out.println("      Поймано IllegalArgumentException из конструктора: " + e.getMessage());
+            }
+            
+            // 3.4 Throw инструкции в методах
+            System.out.println("\n   3.4 Throw в методе assignCourierWithValidation:");
+            try {
+                // Создаем недоступного курьера
+                Courier busyCourier = new Courier(99, "Занятый Курьер", "+79999999999", "автомобиль", false);
+                order1.assignCourierWithValidation(busyCourier);
+            } catch (IllegalStateException e) {
+                System.out.println("      Поймано IllegalStateException: " + e.getMessage());
+            }
+            
+            // 3.5 Безопасная обработка через processOrderSafely
+            System.out.println("\n   3.5 Безопасная обработка через processOrderSafely:");
+            System.out.println("     Вызов system.processOrderSafely() с невалидными данными:");
+            system.processOrderSafely(client1, null, from, to, 
+                new Parcel("", -1.0, 0, 0, 0, 0), express);
 
-        System.out.println("\n4. Массив объектов:");
-        Parcel[] parcels = new Parcel[]{
-            new Parcel("Документы", 0.5, 20, 15, 5, 100),
-            new Parcel("Одежда", 1.0, 40, 30, 10, 800)
-        };
-        for (int i = 0; i < parcels.length; i++) {
-            System.out.println("Посылка" + (i + 1) + ": " + parcels[i].getDescription() + 
-                             ", объём:" + parcels[i].calculateVolume() + " см^3" + 
-                             ", вес:" + parcels[i].getWeight() + "кг");
+            // 3.6 Исключения при поиске
+            System.out.println("\n   3.6 Исключения при поиске несуществующих объектов:");
+            try {
+                system.findClientById(9999);
+            } catch (ClientNotFoundException e) {
+                System.out.println("      Поймано ClientNotFoundException: " + e.getMessage());
+            }
+            
+            try {
+                system.findAvailableCourier(); // Нет курьеров в системе
+            } catch (NoAvailableCourierException e) {
+                System.out.println("      Поймано NoAvailableCourierException: " + e.getMessage());
+            }
+
+            System.out.println("\n4. ФИНАЛЬНАЯ ДЕМОНСТРАЦИЯ РАБОТЫ СИСТЕМЫ:");
+            
+            // Добавляем доступного курьера
+            Courier availableCourier = new Courier(4, "Алексей Доступный", "+79464445566", "автомобиль", true);
+            system.addCourier(availableCourier);
+            
+            // Создаем валидный заказ
+            Order validOrder = system.createOrderWithValidation(client1, client2, from, to, parcel, express);
+            validOrder.assignCourierWithValidation(availableCourier);
+            
+            System.out.println("   - Успешно создан заказ: " + validOrder.getTrackingNumber());
+            System.out.println("   - Статус: " + statusToString(validOrder.getStatus()));
+            System.out.println("   - Стоимость: " + validOrder.getFinalCost() + " руб.");
+            System.out.println("   - Курьер: " + validOrder.getAssignedCourier().getName());
+
+            System.out.println("\n=== ИТОГОВАЯ СТАТИСТИКА ===");
+            System.out.println("Всего клиентов в системе: " + Client.getClientCounter());
+            System.out.println("Глобальных заказов создано: " + DeliverySystem.getGlobalOrderCount());
+            System.out.println("Заказов в текущей системе: " + system.getAllOrders().size());
+
+        } catch (Exception e) {
+            System.err.println("КРИТИЧЕСКАЯ ОШИБКА: " + e.getMessage());
+            e.printStackTrace();
+            return;
         }
-
-        System.out.println("\n5. Массив динамических объектов:");
-        Client[] clients = new Client[]{
-            new Client(2, "Анна Сидорова", "+79872223344", "anna@mail.com"),
-            new Client(3, "Сергей Петров", "+79452323359", "sergey@mail.com")
-        };
-        for (int i = 0; i < clients.length; i++) {
-            System.out.println("Клиент " + (i + 1) + ": " + clients[i].getName() + 
-                             ", телефон: " + clients[i].getPhoneNumber());
-        }
-
-        System.out.println("\n6. Полная демонстрация системы:");
-
-        DeliverySystem system = new DeliverySystem();
-        ExpressTariff express = new ExpressTariff("Экспресс доставка", 300.00);
-
-        Address from = new Address("ул. Партизанская 10", "Москва", "101100");
-        Address to = new Address("ул. Ленина 20", "Москва", "102100");
-        Parcel parcel = new Parcel("Документы", 1.5, 35, 25, 5, 2000);
-
-        Order order = system.createOrder(client1, null, from, to, parcel, express);
-        order.assignCourier(courier1);
-
-        System.out.println("=== ИНФОРМАЦИЯ О ЗАКАЗЕ ===");
-        System.out.println("Трек номер: " + order.getTrackingNumber());
-        System.out.println("Статус: " + statusToString(order.getStatus()));
-        System.out.println("Стоимость доставки: " + order.getFinalCost() + " руб.");
-        System.out.println("Откуда: " + from.getFullAddress());
-        System.out.println("Куда: " + to.getFullAddress());
-        System.out.println("Посылка: " + parcel.getDescription() + 
-                         " (" + parcel.calculateVolume() + " см^3)");
-        System.out.println("Тариф: " + express.getName());
-
-        Courier assignedCourier = order.getAssignedCourier();
-        System.out.println("Курьер: " + (assignedCourier != null ? assignedCourier.getName() : "не назначен"));
-
-        System.out.println("\n=== ДЕМОНСТРАЦИЯ ЗАВЕРШЕНА ===");
     }
 }
