@@ -1,6 +1,8 @@
 ﻿#include <iostream>
 #include <locale.h>
 #include <iomanip>
+#include <memory>
+#include <vector>
 #include "address.h"
 #include "parcel.h"
 #include "client.h"
@@ -22,80 +24,77 @@ string statusToString(OrderStatus status) {
 }
 
 int main() {
-	setlocale(LC_ALL, "Rus");
+    setlocale(LC_ALL, "Rus");
 
-	cout << fixed << setprecision(2);
+    cout << fixed << setprecision(2);
 
-	cout << "=== Демонстрация системы доставки ===" << endl;
+    cout << "=== ДЕМОНСТРАЦИЯ ===" << endl << endl;
 
-	cout << "\n1. Статическая инициализация:" << endl;
-	Address address1("ул. Ленина", "Москва", "101000");
-	Parcel parcel1("Книги", 2.0, 30, 20, 10, 500);
-	cout << "Адрес: " << address1.getFullAddress() << endl;
-	cout << "Посылка: " << parcel1.getDescription() << ", вес: " << parcel1.getWeight() << " кг"
-		<< ", объём: " << parcel1.calculateVolume() << "см^3" << ", стоимость: " << parcel1.getEstimatedValue() << " руб." << endl;
+    try {
+        // 1. Демонстрация умных указателей и работы со строками
+        cout << "1. Умные указатели и строки:" << endl;
+        auto client1 = make_shared<Client>(1, "Иван Иванов", "89161112233", "ivan@mail.com");
+        auto client2 = make_shared<Client>(2, "Петр Петров", "89262223344", "petr@mail.com");
+        auto courier1 = make_shared<Courier>(1, "Алексей Курьер", "89363334455", "автомобиль", true);
 
-	cout << "\n2. Динамическая инициализация:" << endl;
-	Client* client1 = new Client(1, "Иван Иванов", "+79161112233", "ivan@mail.com");
-	Courier* courier1 = new Courier(1, "Пётр Петров", "+79061133233", "автомобиль", true);
-	cout << "Клиент: " << client1->getName() << ", телефон: " << client1->getPhoneNumber() << ", email: " << client1->getEmail() << endl;
-	cout << "Курьер: " << courier1->getName() << ", транспорт: " << courier1->getVehicleType() << ", доступен: " << (courier1->getIsAvailable() ? "да" : "нет") << endl;
+        Address address1("ул. Ленина 10", "Москва", "101000");
+        cout << "   Адрес: " << address1 << " (operator<<)" << endl;
+        cout << "   Клиент: " << client1->getFullInfo() << endl;
 
-	cout << "\n3. Работа с ссылками и указателями:" << endl;
-	Address address2("ул. Пушкина", "Санкт-Петербург", "190000");
-	Address& ref = address2;
-	Address* ptr = &address2;
-	cout << "Через ссылку: " << ref.getFullAddress() << endl;
-	cout << "Через указатель: " << ptr->getFullAddress() << endl;
+        // 2. Демонстрация перегрузки операторов
+        cout << "\n2. Перегрузка операторов:" << endl;
+        Parcel parcel1("Книги", 2.0, 30, 20, 10, 500);
+        Parcel parcel2("Одежда", 1.5, 25, 15, 5, 300);
+        Parcel combined = parcel1 + parcel2;
+        cout << "   Объединенная посылка: " << combined.getDescription()
+            << ", вес: " << combined.getWeight() << " кг" << endl;
 
-	cout << "\n4. Динамический массив объектов класса:" << endl;
-	Parcel* parcels = new Parcel[2]{
-		Parcel("Документы", 0.5, 20, 15, 5, 100),
-		Parcel("Одежда", 1.0, 40, 30, 10, 800)
-	};
-	for (int i = 0; i < 2; i++) {
-		cout << "Посылка" << (i + 1) << ": " << parcels[i].getDescription() << ", объём:" << parcels[i].calculateVolume() << " см^3" << ", вес:" << parcels[i].getWeight() << "кг" << endl;
-	}
-	delete[] parcels;
+        // 3. Создание системы и заказов
+        cout << "\n3. Работа системы:" << endl;
+        DeliverySystem system;
+        system.addClient(client1);
+        system.addClient(client2);
+        system.addCourier(courier1);
 
-	cout << "\n5. Массив динамических объектов класса :" << endl;
-	Client** clients = new Client * [2];
-	clients[0] = new Client(2, "Анна Сидорова", "+79872223344", "anna@mail.com");
-	clients[1] = new Client(3, "Сергей Петров", "+79452323359", "sergey@mail.com");
+        ExpressTariff express("Экспресс", 350.00);
+        Address from("ул. Отправления 10", "Москва", "101100");
+        Address to("ул. Доставки 20", "Москва", "101200");
 
-	for (int i = 0; i < 2; i++) {
-		cout << "Клиент " << (i + 1) << ": " << clients[i]->getName() << ", телефон: " << clients[i]->getPhoneNumber() << endl;
-		delete clients[i];
-	}
-	delete[] clients;
+        auto order1 = system.createOrder(client1, client2, from, to, parcel1,
+            make_shared<ExpressTariff>(express));
+        cout << "   Заказ создан: " << order1->getTrackingNumber() << endl;
 
-	cout << "\n6. Полная демонстрация системы:" << endl;
+        // 4. Демонстрация статических членов
+        cout << "\n4. Статические члены:" << endl;
+        cout << "   Всего заказов: " << Order::getTotalOrdersCreated() << endl;
+        cout << "   Общая выручка: " << Order::getTotalRevenue() << " руб." << endl;
 
-	DeliverySystem system;
+        order1->printOrderInfo(); // Использование this
 
-	ExpressTariff express("Экспресс доставка", 300.00);
+        // 5. Демонстрация обработки исключений
+        cout << "\n5. Обработка исключений:" << endl;
+        try {
+            Parcel invalidParcel("", -1.0, 0, 0, 0, 0);
+            system.createOrder(client1, nullptr, from, to, invalidParcel,
+                make_shared<ExpressTariff>(express));
+        }
+        catch (const std::exception& e) { 
+            cout << "   Поймано исключение: " << e.what() << endl;
+        }
 
-	Address from("ул. Партизанская 10", "Москва", "101100");
-	Address to("ул. Ленина 20", "Москва", "102100");
-	Parcel parcel("Документы", 1.5, 35, 25, 5, 2000);
+        // 6. Демонстрация конструкторов копирования
+        cout << "\n6. Конструкторы копирования:" << endl;
+        Order orderCopy(*order1);
+        cout << "   Копия заказа создана: " << orderCopy.getTrackingNumber() << endl;
 
-	Order* order = system.createOrder(client1, nullptr, from, to, parcel, &express);
-	order->assignCourier(courier1);
+        // 7. Финальная статистика
+        cout << "\n7. Финальная статистика:" << endl;
+        system.printSystemInfo();
 
-	cout << "=== ИНФОРМАЦИЯ О ЗАКАЗЕ ===" << endl;
-	cout << "Трек номер: " << order->getTrackingNumber() << endl;
-	cout << "Статус: " << statusToString(order->getStatus()) << endl;
-	cout << "Стоимость доставки: " << order->getFinalCost() << " руб." << endl;
-	cout << "Откуда: " << from.getFullAddress() << endl;
-	cout << "Куда: " << to.getFullAddress() << endl;
-	cout << "Посылка: " << parcel.getDescription() << " (" << parcel.calculateVolume() << " см^3)" << endl;
-	cout << "Тариф: " << express.getName() << endl;
-
-	Courier* assignedCourier = order->getAssignedCourier();
-	cout << "Курьер:" << (assignedCourier ? assignedCourier->getName() : "не назначен") << endl;
-
-	delete client1;
-	delete courier1;
-
-	return 0;
+    }
+    catch (const std::exception& e) {
+        cerr << "ОШИБКА: " << e.what() << endl;
+        return 1;
+    }
+    return 0;
 }
