@@ -11,10 +11,10 @@ class Courier {
 public:
 	Courier(int id, const std::string& name, const std::string& phoneNumber, const std::string& vehicleType, bool isAvailable);
 
-	// Методы
+	// ГЊГҐГІГ®Г¤Г»
 	bool assignOrder(std::shared_ptr<Order> order);
 
-	// Геттеры
+	// ГѓГҐГІГІГҐГ°Г»
 	int getId() const { return m_id; }
 	std::string getName() const { return m_name; }
 	std::string getPhoneNumber() const { return m_phoneNumber; }

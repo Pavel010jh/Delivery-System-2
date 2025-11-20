@@ -10,7 +10,7 @@ using namespace std;
 class Courier;
 class Tariff;
 
-// Статусы заказа
+// Г‘ГІГ ГІГіГ±Г» Г§Г ГЄГ Г§Г 
 enum class OrderStatus {
 	CREATED = 0,
 	IN_PROGRESS = 1,
@@ -21,39 +21,39 @@ class Order {
 public:
 	Order(const std::string& trackingNumber, const Address& fromAddress, const Address& toAddress, const Parcel& parcel, Tariff* tariff);
 
-	// Конструктор копирования
+	// ГЉГ®Г­Г±ГІГ°ГіГЄГІГ®Г° ГЄГ®ГЇГЁГ°Г®ГўГ Г­ГЁГї
 	Order(const Order& other);
 
-	// Оператор присваивания
+	// ГЋГЇГҐГ°Г ГІГ®Г° ГЇГ°ГЁГ±ГўГ ГЁГўГ Г­ГЁГї
 	Order& operator=(const Order& other);
 
-	// Методы для работы со строками
+	// ГЊГҐГІГ®Г¤Г» Г¤Г«Гї Г°Г ГЎГ®ГІГ» Г±Г® Г±ГІГ°Г®ГЄГ Г¬ГЁ
 	std::string getStatusString() const;
 	bool trackingNumberStartsWith(const std::string& prefix) const;
 
-	// Методы с обработкой исключений
+	// ГЊГҐГІГ®Г¤Г» Г± Г®ГЎГ°Г ГЎГ®ГІГЄГ®Г© ГЁГ±ГЄГ«ГѕГ·ГҐГ­ГЁГ©
 	void updateStatus(OrderStatus newStatus);
 	void assignCourier(std::shared_ptr<Courier> courier);
 	void calculateFinalCost();
 	void validateOrder() const;
 
-	// Статические методы и поля
+	// Г‘ГІГ ГІГЁГ·ГҐГ±ГЄГЁГҐ Г¬ГҐГІГ®Г¤Г» ГЁ ГЇГ®Г«Гї
 	static int getTotalOrdersCreated() { return s_totalOrdersCreated; }
 	static double getTotalRevenue() { return s_totalRevenue; }
 	static void resetStatistics();
 
-	// Использование this
+	// Г€Г±ГЇГ®Г«ГјГ§Г®ГўГ Г­ГЁГҐ this
 	Order* getThisPointer() { return this; }
 	const Order* getThisPointer() const { return this; }
 	void printOrderInfo() const;
 
-	// Перегрузка операторов
+	// ГЏГҐГ°ГҐГЈГ°ГіГ§ГЄГ  Г®ГЇГҐГ°Г ГІГ®Г°Г®Гў
 	bool operator<(const Order& other) const;
 	bool operator>(const Order& other) const;
-	Order& operator++();    // Префиксный инкремент
-	Order operator++(int);  // Постфиксный инкремент
+	Order& operator++();    // ГЏГ°ГҐГґГЁГЄГ±Г­Г»Г© ГЁГ­ГЄГ°ГҐГ¬ГҐГ­ГІ
+	Order operator++(int);  // ГЏГ®Г±ГІГґГЁГЄГ±Г­Г»Г© ГЁГ­ГЄГ°ГҐГ¬ГҐГ­ГІ
 
-	// Геттеры
+	// ГѓГҐГІГІГҐГ°Г»
 	std::string getTrackingNumber() const { return m_trackingNumber; }
 	OrderStatus getStatus() const { return m_status; }
 	double getFinalCost() const { return m_finalCost; }
@@ -68,12 +68,12 @@ private:
 	Parcel m_parcel;
 	std::shared_ptr<Courier> m_assignedCourier;
 	Tariff* m_chosenTariff;
-	// Статические поля
+	// Г‘ГІГ ГІГЁГ·ГҐГ±ГЄГЁГҐ ГЇГ®Г«Гї
 	static int s_totalOrdersCreated;
 	static double s_totalRevenue;
 };
 
-// Пользовательские исключения для Order
+// ГЏГ®Г«ГјГ§Г®ГўГ ГІГҐГ«ГјГ±ГЄГЁГҐ ГЁГ±ГЄГ«ГѕГ·ГҐГ­ГЁГї Г¤Г«Гї Order
 class InvalidOrderException : public std::runtime_error {
 public:
 	InvalidOrderException(const std::string& message) : std::runtime_error(message) {}

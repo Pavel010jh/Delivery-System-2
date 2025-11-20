@@ -13,25 +13,25 @@ public:
 
 	Client(const Client& other);
 
-	// Оператор присваивания
+	// ГЋГЇГҐГ°Г ГІГ®Г° ГЇГ°ГЁГ±ГўГ ГЁГўГ Г­ГЁГї
 	Client& operator=(const Client& other);
 
-	// Методы для работы со строками
+	// ГЊГҐГІГ®Г¤Г» Г¤Г«Гї Г°Г ГЎГ®ГІГ» Г±Г® Г±ГІГ°Г®ГЄГ Г¬ГЁ
 	std::string getFullInfo() const;
 	bool hasEmailDomain(const std::string& domain) const;
 	std::string getFormattedPhone() const;
 	std::vector<std::string> getAddressLines() const;
 
-	// Методы
+	// ГЊГҐГІГ®Г¤Г»
 	void addAddress(const Address& newAddress);
 	void addToHistory(std::shared_ptr<Order> order);
 
-	// Перегрузка операторов
+	// ГЏГҐГ°ГҐГЈГ°ГіГ§ГЄГ  Г®ГЇГҐГ°Г ГІГ®Г°Г®Гў
 	bool operator==(const Client& other) const;
 	bool operator!=(const Client& other) const;
 	Client& operator+=(const Address& address);
 
-	// Геттеры
+	// ГѓГҐГІГІГҐГ°Г»
 	int getId() const { return m_id; }
 	std::string getName() const { return m_name; }
 	std::string getPhoneNumber() const { return m_phoneNumber; }

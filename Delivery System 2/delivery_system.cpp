@@ -2,39 +2,39 @@
 #include <iostream>
 #include <algorithm>
 
-// Инициализация статических переменных
+// Г€Г­ГЁГ¶ГЁГ Г«ГЁГ§Г Г¶ГЁГї Г±ГІГ ГІГЁГ·ГҐГ±ГЄГЁГµ ГЇГҐГ°ГҐГ¬ГҐГ­Г­Г»Гµ
 int DeliverySystem::s_globalOrderCount = 0;
 const std::string DeliverySystem::s_systemVersion = "2.1.0";
 
-// Инициализация статической переменной
+// Г€Г­ГЁГ¶ГЁГ Г«ГЁГ§Г Г¶ГЁГї Г±ГІГ ГІГЁГ·ГҐГ±ГЄГ®Г© ГЇГҐГ°ГҐГ¬ГҐГ­Г­Г®Г©
 int DeliverySystem::m_orderCounter = 0;
 
-// Конструктор
+// ГЉГ®Г­Г±ГІГ°ГіГЄГІГ®Г°
 DeliverySystem::DeliverySystem() {}
 
-// Деструктор
+// Г„ГҐГ±ГІГ°ГіГЄГІГ®Г°
 DeliverySystem::~DeliverySystem() {
 }
 
-// Вывод информации о системе с использованием this
+// Г‚Г»ГўГ®Г¤ ГЁГ­ГґГ®Г°Г¬Г Г¶ГЁГЁ Г® Г±ГЁГ±ГІГҐГ¬ГҐ Г± ГЁГ±ГЇГ®Г«ГјГ§Г®ГўГ Г­ГЁГҐГ¬ this
 void DeliverySystem::printSystemInfo() const {
-	std::cout << "=== Информация о системе доставки ===" << std::endl;
-	std::cout << "Версия системы: " << this->getSystemVersion() << std::endl;
-	std::cout << "Всего заказов в системе: " << this->m_allOrders.size() << std::endl;
-	std::cout << "Всего клиентов: " << this->m_allClients.size() << std::endl;
-	std::cout << "Всего курьеров: " << this->m_allCouriers.size() << std::endl;
-	std::cout << "Глобальный счетчик заказов: " << this->getGlobalOrderCount() << std::endl;
+	std::cout << "=== Г€Г­ГґГ®Г°Г¬Г Г¶ГЁГї Г® Г±ГЁГ±ГІГҐГ¬ГҐ Г¤Г®Г±ГІГ ГўГЄГЁ ===" << std::endl;
+	std::cout << "Г‚ГҐГ°Г±ГЁГї Г±ГЁГ±ГІГҐГ¬Г»: " << this->getSystemVersion() << std::endl;
+	std::cout << "Г‚Г±ГҐГЈГ® Г§Г ГЄГ Г§Г®Гў Гў Г±ГЁГ±ГІГҐГ¬ГҐ: " << this->m_allOrders.size() << std::endl;
+	std::cout << "Г‚Г±ГҐГЈГ® ГЄГ«ГЁГҐГ­ГІГ®Гў: " << this->m_allClients.size() << std::endl;
+	std::cout << "Г‚Г±ГҐГЈГ® ГЄГіГ°ГјГҐГ°Г®Гў: " << this->m_allCouriers.size() << std::endl;
+	std::cout << "ГѓГ«Г®ГЎГ Г«ГјГ­Г»Г© Г±Г·ГҐГІГ·ГЁГЄ Г§Г ГЄГ Г§Г®Гў: " << this->getGlobalOrderCount() << std::endl;
 }
 
-// Создание нового заказа с обработкой исключений
+// Г‘Г®Г§Г¤Г Г­ГЁГҐ Г­Г®ГўГ®ГЈГ® Г§Г ГЄГ Г§Г  Г± Г®ГЎГ°Г ГЎГ®ГІГЄГ®Г© ГЁГ±ГЄГ«ГѕГ·ГҐГ­ГЁГ©
 std::shared_ptr<Order> DeliverySystem::createOrder(std::shared_ptr<Client> sender, std::shared_ptr<Client> receiver, const Address& from, const Address& to, const Parcel& parcel, std::shared_ptr<Tariff> tariff)
 {
 	try {
-		// Валидация входных данных
+		// Г‚Г Г«ГЁГ¤Г Г¶ГЁГї ГўГµГ®Г¤Г­Г»Гµ Г¤Г Г­Г­Г»Гµ
 		validateOrderData(from, to, parcel);
 
 		if (!tariff) {
-			throw std::invalid_argument("Тариф не может быть нулевым");
+			throw std::invalid_argument("Г’Г Г°ГЁГґ Г­ГҐ Г¬Г®Г¦ГҐГІ ГЎГ»ГІГј Г­ГіГ«ГҐГўГ»Г¬");
 		}
 	std::string trackingNumber = "TRK" + std::to_string(++m_orderCounter);
 	auto newOrder = std::make_shared<Order>(trackingNumber, from, to, parcel, tariff.get());
@@ -47,83 +47,83 @@ std::shared_ptr<Order> DeliverySystem::createOrder(std::shared_ptr<Client> sende
 	return newOrder;
 }
 	catch (const InvalidAddressException& e) {
-		std::cerr << "Ошибка адреса при создании заказа: " << e.what() << std::endl;
-		throw OrderCreationException("Не удалось создать заказ из-за неверного адреса", e);
+		std::cerr << "ГЋГёГЁГЎГЄГ  Г Г¤Г°ГҐГ±Г  ГЇГ°ГЁ Г±Г®Г§Г¤Г Г­ГЁГЁ Г§Г ГЄГ Г§Г : " << e.what() << std::endl;
+		throw OrderCreationException("ГЌГҐ ГіГ¤Г Г«Г®Г±Гј Г±Г®Г§Г¤Г ГІГј Г§Г ГЄГ Г§ ГЁГ§-Г§Г  Г­ГҐГўГҐГ°Г­Г®ГЈГ® Г Г¤Г°ГҐГ±Г ", e);
 	}
 	catch (const InvalidParcelException& e) {
-		std::cerr << "Ошибка посылки при создании заказа: " << e.what() << std::endl;
-		throw OrderCreationException("Не удалось создать заказ из-за неверных данных посылки", e);
+		std::cerr << "ГЋГёГЁГЎГЄГ  ГЇГ®Г±Г»Г«ГЄГЁ ГЇГ°ГЁ Г±Г®Г§Г¤Г Г­ГЁГЁ Г§Г ГЄГ Г§Г : " << e.what() << std::endl;
+		throw OrderCreationException("ГЌГҐ ГіГ¤Г Г«Г®Г±Гј Г±Г®Г§Г¤Г ГІГј Г§Г ГЄГ Г§ ГЁГ§-Г§Г  Г­ГҐГўГҐГ°Г­Г»Гµ Г¤Г Г­Г­Г»Гµ ГЇГ®Г±Г»Г«ГЄГЁ", e);
 	}
 	catch (const std::invalid_argument& e) {
-		std::cerr << "Неверный аргумент при создании заказа: " << e.what() << std::endl;
-		throw OrderCreationException("Неверные параметры заказа", e);
+		std::cerr << "ГЌГҐГўГҐГ°Г­Г»Г© Г Г°ГЈГіГ¬ГҐГ­ГІ ГЇГ°ГЁ Г±Г®Г§Г¤Г Г­ГЁГЁ Г§Г ГЄГ Г§Г : " << e.what() << std::endl;
+		throw OrderCreationException("ГЌГҐГўГҐГ°Г­Г»ГҐ ГЇГ Г°Г Г¬ГҐГІГ°Г» Г§Г ГЄГ Г§Г ", e);
 	}
 	catch (const std::exception& e) {
-		std::cerr << "Неизвестная ошибка при создании заказа: " << e.what() << std::endl;
-		throw OrderCreationException("Неизвестная ошибка при создании заказа", e);
+		std::cerr << "ГЌГҐГЁГ§ГўГҐГ±ГІГ­Г Гї Г®ГёГЁГЎГЄГ  ГЇГ°ГЁ Г±Г®Г§Г¤Г Г­ГЁГЁ Г§Г ГЄГ Г§Г : " << e.what() << std::endl;
+		throw OrderCreationException("ГЌГҐГЁГ§ГўГҐГ±ГІГ­Г Гї Г®ГёГЁГЎГЄГ  ГЇГ°ГЁ Г±Г®Г§Г¤Г Г­ГЁГЁ Г§Г ГЄГ Г§Г ", e);
 	}
 }
 
-// Поиск клиента по ID с исключением
+// ГЏГ®ГЁГ±ГЄ ГЄГ«ГЁГҐГ­ГІГ  ГЇГ® ID Г± ГЁГ±ГЄГ«ГѕГ·ГҐГ­ГЁГҐГ¬
 std::shared_ptr<Client> DeliverySystem::findClientById(int id) const {
     for (const auto& client : m_allClients) {
         if (client->getId() == id) {
             return client;
         }
     }
-    throw ClientNotFoundException("Клиент с ID " + std::to_string(id) + " не найден");
+    throw ClientNotFoundException("ГЉГ«ГЁГҐГ­ГІ Г± ID " + std::to_string(id) + " Г­ГҐ Г­Г Г©Г¤ГҐГ­");
 }
 
-// Поиск доступного курьера с исключением
+// ГЏГ®ГЁГ±ГЄ Г¤Г®Г±ГІГіГЇГ­Г®ГЈГ® ГЄГіГ°ГјГҐГ°Г  Г± ГЁГ±ГЄГ«ГѕГ·ГҐГ­ГЁГҐГ¬
 std::shared_ptr<Courier> DeliverySystem::findAvailableCourier() const {
     for (const auto& courier : m_allCouriers) {
         if (courier->getIsAvailable()) {
             return courier;
         }
     }
-    throw NoAvailableCourierException("Нет доступных курьеров в системе");
+    throw NoAvailableCourierException("ГЌГҐГІ Г¤Г®Г±ГІГіГЇГ­Г»Гµ ГЄГіГ°ГјГҐГ°Г®Гў Гў Г±ГЁГ±ГІГҐГ¬ГҐ");
 }
 
-// Валидация данных заказа
+// Г‚Г Г«ГЁГ¤Г Г¶ГЁГї Г¤Г Г­Г­Г»Гµ Г§Г ГЄГ Г§Г 
 void DeliverySystem::validateOrderData(const Address& from, const Address& to, const Parcel& parcel) const {
-    // Проверка адреса отправителя
+    // ГЏГ°Г®ГўГҐГ°ГЄГ  Г Г¤Г°ГҐГ±Г  Г®ГІГЇГ°Г ГўГЁГІГҐГ«Гї
     if (from.getStreet().empty() || from.getCity().empty()) {
-        throw InvalidAddressException("Адрес отправителя не может быть пустым");
+        throw InvalidAddressException("ГЂГ¤Г°ГҐГ± Г®ГІГЇГ°Г ГўГЁГІГҐГ«Гї Г­ГҐ Г¬Г®Г¦ГҐГІ ГЎГ»ГІГј ГЇГіГ±ГІГ»Г¬");
     }
 
-    // Проверка адреса получателя
+    // ГЏГ°Г®ГўГҐГ°ГЄГ  Г Г¤Г°ГҐГ±Г  ГЇГ®Г«ГіГ·Г ГІГҐГ«Гї
     if (to.getStreet().empty() || to.getCity().empty()) {
-        throw InvalidAddressException("Адрес получателя не может быть пустым");
+        throw InvalidAddressException("ГЂГ¤Г°ГҐГ± ГЇГ®Г«ГіГ·Г ГІГҐГ«Гї Г­ГҐ Г¬Г®Г¦ГҐГІ ГЎГ»ГІГј ГЇГіГ±ГІГ»Г¬");
     }
 
-    // Проверка что адреса разные
+    // ГЏГ°Г®ГўГҐГ°ГЄГ  Г·ГІГ® Г Г¤Г°ГҐГ±Г  Г°Г Г§Г­Г»ГҐ
     if (from.getStreet() == to.getStreet() && from.getCity() == to.getCity()) {
-        throw InvalidAddressException("Адреса отправителя и получателя не могут совпадать");
+        throw InvalidAddressException("ГЂГ¤Г°ГҐГ±Г  Г®ГІГЇГ°Г ГўГЁГІГҐГ«Гї ГЁ ГЇГ®Г«ГіГ·Г ГІГҐГ«Гї Г­ГҐ Г¬Г®ГЈГіГІ Г±Г®ГўГЇГ Г¤Г ГІГј");
     }
 
-    // Проверка посылки
+    // ГЏГ°Г®ГўГҐГ°ГЄГ  ГЇГ®Г±Г»Г«ГЄГЁ
     if (parcel.getWeight() <= 0) {
-        throw InvalidParcelException("Вес посылки должен быть положительным");
+        throw InvalidParcelException("Г‚ГҐГ± ГЇГ®Г±Г»Г«ГЄГЁ Г¤Г®Г«Г¦ГҐГ­ ГЎГ»ГІГј ГЇГ®Г«Г®Г¦ГЁГІГҐГ«ГјГ­Г»Г¬");
     }
 
     if (parcel.getWeight() > 100.0) {
-        throw InvalidParcelException("Вес посылки не может превышать 100 кг");
+        throw InvalidParcelException("Г‚ГҐГ± ГЇГ®Г±Г»Г«ГЄГЁ Г­ГҐ Г¬Г®Г¦ГҐГІ ГЇГ°ГҐГўГ»ГёГ ГІГј 100 ГЄГЈ");
     }
 
     if (parcel.calculateVolume() <= 0) {
-        throw InvalidParcelException("Объем посылки должен быть положительным");
+        throw InvalidParcelException("ГЋГЎГєГҐГ¬ ГЇГ®Г±Г»Г«ГЄГЁ Г¤Г®Г«Г¦ГҐГ­ ГЎГ»ГІГј ГЇГ®Г«Г®Г¦ГЁГІГҐГ«ГјГ­Г»Г¬");
     }
 
-    if (parcel.calculateVolume() > 1000000.0) { // 1 м?
-        throw InvalidParcelException("Объем посылки не может превышать 1 м?");
+    if (parcel.calculateVolume() > 1000000.0) { // 1 Г¬?
+        throw InvalidParcelException("ГЋГЎГєГҐГ¬ ГЇГ®Г±Г»Г«ГЄГЁ Г­ГҐ Г¬Г®Г¦ГҐГІ ГЇГ°ГҐГўГ»ГёГ ГІГј 1 Г¬?");
     }
 
     if (parcel.getEstimatedValue() < 0) {
-        throw InvalidParcelException("Оценочная стоимость не может быть отрицательной");
+        throw InvalidParcelException("ГЋГ¶ГҐГ­Г®Г·Г­Г Гї Г±ГІГ®ГЁГ¬Г®Г±ГІГј Г­ГҐ Г¬Г®Г¦ГҐГІ ГЎГ»ГІГј Г®ГІГ°ГЁГ¶Г ГІГҐГ«ГјГ­Г®Г©");
     }
 }
 
-// Поиск заказов по статусу
+// ГЏГ®ГЁГ±ГЄ Г§Г ГЄГ Г§Г®Гў ГЇГ® Г±ГІГ ГІГіГ±Гі
 std::vector<std::shared_ptr<Order>> DeliverySystem::findOrdersByStatus(OrderStatus status) const {
 	std::vector<std::shared_ptr<Order>> result;
 	for (auto order : m_allOrders) {
@@ -134,17 +134,17 @@ std::vector<std::shared_ptr<Order>> DeliverySystem::findOrdersByStatus(OrderStat
 	return result;
 }
 
-// Добавление клиента в систему
+// Г„Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ ГЄГ«ГЁГҐГ­ГІГ  Гў Г±ГЁГ±ГІГҐГ¬Гі
 void DeliverySystem::addClient(std::shared_ptr<Client> client) {
 	m_allClients.push_back(client);
 }
 
-// Добавление курьера в систему
+// Г„Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ ГЄГіГ°ГјГҐГ°Г  Гў Г±ГЁГ±ГІГҐГ¬Гі
 void DeliverySystem::addCourier(std::shared_ptr<Courier> courier) {
 	m_allCouriers.push_back(courier);
 }
 
-// Добавление тарифа в систему
+// Г„Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ ГІГ Г°ГЁГґГ  Гў Г±ГЁГ±ГІГҐГ¬Гі
 void DeliverySystem::addTariff(std::shared_ptr<Tariff> tariff) {
 	m_availableTariffs.push_back(tariff);
 }

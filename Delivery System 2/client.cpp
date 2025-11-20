@@ -3,19 +3,19 @@
 #include <sstream>
 #include <algorithm>
 
-// Конструктор
+// ГЉГ®Г­Г±ГІГ°ГіГЄГІГ®Г°
 Client::Client(int id, const std::string& name, const std::string& phoneNumber, const std::string& email)
 	: m_id(id), m_name(name), m_phoneNumber(phoneNumber), m_email(email) {
 }
 
-// Конструктор копирования (базовый)
+// ГЉГ®Г­Г±ГІГ°ГіГЄГІГ®Г° ГЄГ®ГЇГЁГ°Г®ГўГ Г­ГЁГї (ГЎГ Г§Г®ГўГ»Г©)
 Client::Client(const Client& other)
 	: m_id(other.m_id), m_name(other.m_name),
 	m_phoneNumber(other.m_phoneNumber), m_email(other.m_email),
 	m_addresses(other.m_addresses) {
 }
 
-// Оператор присваивания
+// ГЋГЇГҐГ°Г ГІГ®Г° ГЇГ°ГЁГ±ГўГ ГЁГўГ Г­ГЁГї
 Client& Client::operator=(const Client& other) {
 	if (this != &other) {
 		m_id = other.m_id;
@@ -27,16 +27,16 @@ Client& Client::operator=(const Client& other) {
 	return *this;
 }
 
-// Полная информация о клиенте
+// ГЏГ®Г«Г­Г Гї ГЁГ­ГґГ®Г°Г¬Г Г¶ГЁГї Г® ГЄГ«ГЁГҐГ­ГІГҐ
 std::string Client::getFullInfo() const {
     std::stringstream ss;
-    ss << "ID: " << m_id << ", Имя: " << m_name
-        << ", Телефон: " << getFormattedPhone()
+    ss << "ID: " << m_id << ", Г€Г¬Гї: " << m_name
+        << ", Г’ГҐГ«ГҐГґГ®Г­: " << getFormattedPhone()
         << ", Email: " << m_email;
     return ss.str();
 }
 
-// Проверка домена email
+// ГЏГ°Г®ГўГҐГ°ГЄГ  Г¤Г®Г¬ГҐГ­Г  email
 bool Client::hasEmailDomain(const std::string& domain) const {
     size_t pos = m_email.find('@');
     if (pos == std::string::npos) return false;
@@ -45,19 +45,19 @@ bool Client::hasEmailDomain(const std::string& domain) const {
     return emailDomain.find(domain) != std::string::npos;
 }
 
-// Форматированный номер телефона
+// Г”Г®Г°Г¬Г ГІГЁГ°Г®ГўГ Г­Г­Г»Г© Г­Г®Г¬ГҐГ° ГІГҐГ«ГҐГґГ®Г­Г 
 std::string Client::getFormattedPhone() const {
     if (m_phoneNumber.empty()) return "";
 
     std::string formatted = m_phoneNumber;
-    // Простое форматирование: +7 (916) 111-22-33
+    // ГЏГ°Г®Г±ГІГ®ГҐ ГґГ®Г°Г¬Г ГІГЁГ°Г®ГўГ Г­ГЁГҐ: +7 (916) 111-22-33
     if (formatted.length() == 11 && formatted[0] == '8') {
         formatted = "+7" + formatted.substr(1);
     }
     return formatted;
 }
 
-// Получение адресов в виде строк
+// ГЏГ®Г«ГіГ·ГҐГ­ГЁГҐ Г Г¤Г°ГҐГ±Г®Гў Гў ГўГЁГ¤ГҐ Г±ГІГ°Г®ГЄ
 std::vector<std::string> Client::getAddressLines() const {
     std::vector<std::string> lines;
     for (const auto& address : m_addresses) {
@@ -66,27 +66,27 @@ std::vector<std::string> Client::getAddressLines() const {
     return lines;
 }
 
-// Добавление адреса клиенту
+// Г„Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ Г Г¤Г°ГҐГ±Г  ГЄГ«ГЁГҐГ­ГІГі
 void Client::addAddress(const Address& newAddress) {
 	m_addresses.push_back(newAddress);
 }
 
-// Добавление заказа в историю
+// Г„Г®ГЎГ ГўГ«ГҐГ­ГЁГҐ Г§Г ГЄГ Г§Г  Гў ГЁГ±ГІГ®Г°ГЁГѕ
 void Client::addToHistory(std::shared_ptr<Order> order) {
 	m_orderHistory.push_back(order);
 }
 
-// Перегрузка оператора сравнения ==
+// ГЏГҐГ°ГҐГЈГ°ГіГ§ГЄГ  Г®ГЇГҐГ°Г ГІГ®Г°Г  Г±Г°Г ГўГ­ГҐГ­ГЁГї ==
 bool Client::operator==(const Client& other) const {
 	return m_id == other.m_id && m_email == other.m_email;
 }
 
-// Перегрузка оператора сравнения !=
+// ГЏГҐГ°ГҐГЈГ°ГіГ§ГЄГ  Г®ГЇГҐГ°Г ГІГ®Г°Г  Г±Г°Г ГўГ­ГҐГ­ГЁГї !=
 bool Client::operator!=(const Client& other) const {
 	return !(*this == other);
 }
 
-// Перегрузка оператора +=
+// ГЏГҐГ°ГҐГЈГ°ГіГ§ГЄГ  Г®ГЇГҐГ°Г ГІГ®Г°Г  +=
 Client& Client::operator+=(const Address& address) {
 	addAddress(address);
 	return *this;

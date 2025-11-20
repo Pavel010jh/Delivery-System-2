@@ -4,28 +4,28 @@ using namespace std;
 
 class Parcel {
 public:
-	// Конструкторы
+	// ГЉГ®Г­Г±ГІГ°ГіГЄГІГ®Г°Г»
 	Parcel(const string& description, double weight, double lenght, double width, double height, double estimatedValue);
 	
-	// Конструктор копирования
+	// ГЉГ®Г­Г±ГІГ°ГіГЄГІГ®Г° ГЄГ®ГЇГЁГ°Г®ГўГ Г­ГЁГї
 	Parcel(const Parcel& other);
 
-	// Оператор присваивания
+	// ГЋГЇГҐГ°Г ГІГ®Г° ГЇГ°ГЁГ±ГўГ ГЁГўГ Г­ГЁГї
 	Parcel& operator=(const Parcel& other);
 
-	// Методы для работы со строками
+	// ГЊГҐГІГ®Г¤Г» Г¤Г«Гї Г°Г ГЎГ®ГІГ» Г±Г® Г±ГІГ°Г®ГЄГ Г¬ГЁ
 	std::string getFullDescription() const;
 	std::string getSizeCategory() const;
 	bool descriptionContains(const std::string& keyword) const;
 
-	// Методы
+	// ГЊГҐГІГ®Г¤Г»
 	double calculateVolume() const;
 
-	// Перегрузка операторов
+	// ГЏГҐГ°ГҐГЈГ°ГіГ§ГЄГ  Г®ГЇГҐГ°Г ГІГ®Г°Г®Гў
 	bool operator==(const Parcel& other) const;
-	Parcel operator+(const Parcel& other) const; // Объединение посылок
+	Parcel operator+(const Parcel& other) const; // ГЋГЎГєГҐГ¤ГЁГ­ГҐГ­ГЁГҐ ГЇГ®Г±Г»Г«Г®ГЄ
 
-	// Геттеры
+	// ГѓГҐГІГІГҐГ°Г»
 	string getDescription() const { return m_description; }
 	double getWeight() const { return m_weight; }
 	double getLenght() const { return m_lenght; }

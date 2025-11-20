@@ -5,23 +5,23 @@ using namespace std;
 class Address {
 public:
 
-	// Конструкторы
+	// ГЉГ®Г­Г±ГІГ°ГіГЄГІГ®Г°Г»
 	Address() = default;
 	Address(const string& street, const string& city, const string& postalCode);
 	
-	// Конструктор копирования
+	// ГЉГ®Г­Г±ГІГ°ГіГЄГІГ®Г° ГЄГ®ГЇГЁГ°Г®ГўГ Г­ГЁГї
 	Address(const Address& other);
 
-	// Оператор присваивания
+	// ГЋГЇГҐГ°Г ГІГ®Г° ГЇГ°ГЁГ±ГўГ ГЁГўГ Г­ГЁГї
 	Address& operator=(const Address& other);
 
-	// Методы для работы со строками
+	// ГЊГҐГІГ®Г¤Г» Г¤Г«Гї Г°Г ГЎГ®ГІГ» Г±Г® Г±ГІГ°Г®ГЄГ Г¬ГЁ
 	std::string getFullAddress() const;
 	bool contains(const std::string& searchText) const;
 	std::string toUpperCase() const;
 	std::string getCityDistrict() const;
 
-	// Геттеры
+	// ГѓГҐГІГІГҐГ°Г»
 	string getStreet() const { return m_street; }
 	string getCity() const { return m_city; }
 	string getPostalCode() const { return m_postalCode; }

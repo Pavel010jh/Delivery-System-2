@@ -3,17 +3,17 @@
 #include <cctype>
 #include <sstream>
 
-// Конструктор
+// ГЉГ®Г­Г±ГІГ°ГіГЄГІГ®Г°
 Address::Address(const string& street, const string& city, const string& postalCode)
 	:m_street(street), m_city(city), m_postalCode(postalCode) {
 }
 
-// Конструктор копирования
+// ГЉГ®Г­Г±ГІГ°ГіГЄГІГ®Г° ГЄГ®ГЇГЁГ°Г®ГўГ Г­ГЁГї
 Address::Address(const Address& other)
     : m_street(other.m_street), m_city(other.m_city), m_postalCode(other.m_postalCode) {
 }
 
-// Оператор присваивания
+// ГЋГЇГҐГ°Г ГІГ®Г° ГЇГ°ГЁГ±ГўГ ГЁГўГ Г­ГЁГї
 Address& Address::operator=(const Address& other) {
     if (this != &other) {
         m_street = other.m_street;
@@ -23,64 +23,64 @@ Address& Address::operator=(const Address& other) {
     return *this;
 }
 
-// Полный адрес одной строкой
+// ГЏГ®Г«Г­Г»Г© Г Г¤Г°ГҐГ± Г®Г¤Г­Г®Г© Г±ГІГ°Г®ГЄГ®Г©
 string Address::getFullAddress() const {
 	return m_street + ", " + m_city + ", " + m_postalCode;
 }
 
-// Поиск текста в адресе
+// ГЏГ®ГЁГ±ГЄ ГІГҐГЄГ±ГІГ  Гў Г Г¤Г°ГҐГ±ГҐ
 bool Address::contains(const std::string& searchText) const {
     std::string fullAddress = getFullAddress();
     return fullAddress.find(searchText) != std::string::npos;
 }
 
-// Адрес в верхнем регистре
+// ГЂГ¤Г°ГҐГ± Гў ГўГҐГ°ГµГ­ГҐГ¬ Г°ГҐГЈГЁГ±ГІГ°ГҐ
 std::string Address::toUpperCase() const {
     std::string result = getFullAddress();
     std::transform(result.begin(), result.end(), result.begin(), ::toupper);
     return result;
 }
 
-// Извлечение района из названия улицы (простая имитация)
+// Г€Г§ГўГ«ГҐГ·ГҐГ­ГЁГҐ Г°Г Г©Г®Г­Г  ГЁГ§ Г­Г Г§ГўГ Г­ГЁГї ГіГ«ГЁГ¶Г» (ГЇГ°Г®Г±ГІГ Гї ГЁГ¬ГЁГІГ Г¶ГЁГї)
 std::string Address::getCityDistrict() const {
-    if (m_street.find("Центр") != std::string::npos) {
-        return "Центральный район";
+    if (m_street.find("Г–ГҐГ­ГІГ°") != std::string::npos) {
+        return "Г–ГҐГ­ГІГ°Г Г«ГјГ­Г»Г© Г°Г Г©Г®Г­";
     }
-    else if (m_street.find("Север") != std::string::npos) {
-        return "Северный район";
+    else if (m_street.find("Г‘ГҐГўГҐГ°") != std::string::npos) {
+        return "Г‘ГҐГўГҐГ°Г­Г»Г© Г°Г Г©Г®Г­";
     }
-    else if (m_street.find("Юг") != std::string::npos) {
-        return "Южный район";
+    else if (m_street.find("ГћГЈ") != std::string::npos) {
+        return "ГћГ¦Г­Г»Г© Г°Г Г©Г®Г­";
     }
     else {
-        return "Неизвестный район";
+        return "ГЌГҐГЁГ§ГўГҐГ±ГІГ­Г»Г© Г°Г Г©Г®Г­";
     }
 }
 
-// Дружественная функция для вывода в поток
+// Г„Г°ГіГ¦ГҐГ±ГІГўГҐГ­Г­Г Гї ГґГіГ­ГЄГ¶ГЁГї Г¤Г«Гї ГўГ»ГўГ®Г¤Г  Гў ГЇГ®ГІГ®ГЄ
 std::ostream& operator<<(std::ostream& os, const Address& address) {
     os << address.getFullAddress();
     return os;
 }
 
-// Перегрузка оператора сравнения ==
+// ГЏГҐГ°ГҐГЈГ°ГіГ§ГЄГ  Г®ГЇГҐГ°Г ГІГ®Г°Г  Г±Г°Г ГўГ­ГҐГ­ГЁГї ==
 bool Address::operator==(const Address& other) const {
     return m_street == other.m_street &&
         m_city == other.m_city &&
         m_postalCode == other.m_postalCode;
 }
 
-// Перегрузка оператора сравнения !=
+// ГЏГҐГ°ГҐГЈГ°ГіГ§ГЄГ  Г®ГЇГҐГ°Г ГІГ®Г°Г  Г±Г°Г ГўГ­ГҐГ­ГЁГї !=
 bool Address::operator!=(const Address& other) const {
     return !(*this == other);
 }
 
-// Перегрузка оператора сложения +
+// ГЏГҐГ°ГҐГЈГ°ГіГ§ГЄГ  Г®ГЇГҐГ°Г ГІГ®Г°Г  Г±Г«Г®Г¦ГҐГ­ГЁГї +
 Address Address::operator+(const std::string& additionalInfo) const {
     return Address(m_street + " " + additionalInfo, m_city, m_postalCode);
 }
 
-// Перегрузка оператора +=
+// ГЏГҐГ°ГҐГЈГ°ГіГ§ГЄГ  Г®ГЇГҐГ°Г ГІГ®Г°Г  +=
 Address& Address::operator+=(const std::string& additionalInfo) {
     m_street += " " + additionalInfo;
     return *this;

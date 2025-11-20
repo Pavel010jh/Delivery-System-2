@@ -12,36 +12,36 @@ using namespace std;
 
 class DeliverySystem {
 public:
-	// Конструктор и деструктор
+	// ГЉГ®Г­Г±ГІГ°ГіГЄГІГ®Г° ГЁ Г¤ГҐГ±ГІГ°ГіГЄГІГ®Г°
 	DeliverySystem();
 	~DeliverySystem();
 
-	// Основные методы с обработкой исключений
+	// ГЋГ±Г­Г®ГўГ­Г»ГҐ Г¬ГҐГІГ®Г¤Г» Г± Г®ГЎГ°Г ГЎГ®ГІГЄГ®Г© ГЁГ±ГЄГ«ГѕГ·ГҐГ­ГЁГ©
 	std::shared_ptr<Order> createOrder(std::shared_ptr<Client> sender, std::shared_ptr<Client> receiver, const Address& from, const Address& to, const Parcel& parcel, std::shared_ptr<Tariff> tariff);
 
 	std::vector < std::shared_ptr<Order>> findOrdersByStatus(OrderStatus status) const;
 
-	// Методы с исключениями
+	// ГЊГҐГІГ®Г¤Г» Г± ГЁГ±ГЄГ«ГѕГ·ГҐГ­ГЁГїГ¬ГЁ
 	std::shared_ptr<Client> findClientById(int id) const;
 	std::shared_ptr<Courier> findAvailableCourier() const;
 	void validateOrderData(const Address& from, const Address& to, const Parcel& parcel) const;
 
-	// Статические методы
+	// Г‘ГІГ ГІГЁГ·ГҐГ±ГЄГЁГҐ Г¬ГҐГІГ®Г¤Г»
 	static int getGlobalOrderCount() { return s_globalOrderCount; }
 	static std::string getSystemVersion() { return s_systemVersion; }
 	static void incrementGlobalOrderCount() { s_globalOrderCount++; }
 
-	// Использование this
+	// Г€Г±ГЇГ®Г«ГјГ§Г®ГўГ Г­ГЁГҐ this
 	DeliverySystem* getSystemInstance() { return this; }
 	const DeliverySystem* getSystemInstance() const { return this; }
 	void printSystemInfo() const;
 
-	// Методы добавления сущностей
+	// ГЊГҐГІГ®Г¤Г» Г¤Г®ГЎГ ГўГ«ГҐГ­ГЁГї Г±ГіГ№Г­Г®Г±ГІГҐГ©
 	void addClient(std::shared_ptr<Client> client);
 	void addCourier(std::shared_ptr<Courier> courier);
 	void addTariff(std::shared_ptr<Tariff> tariff);
 
-	// Геттеры
+	// ГѓГҐГІГІГҐГ°Г»
 	std::vector<std::shared_ptr<Order>> getAllOrders() const { return m_allOrders; }
 
 private:
@@ -51,11 +51,11 @@ private:
 	std::vector<std::shared_ptr<Warehouse>> m_allWarehouses;
 	std::vector<std::shared_ptr<Tariff>> m_availableTariffs;
 	static int m_orderCounter;
-	// Статические поля
+	// Г‘ГІГ ГІГЁГ·ГҐГ±ГЄГЁГҐ ГЇГ®Г«Гї
 	static int s_globalOrderCount;
 	static const std::string s_systemVersion;
 
-	// Пользовательские классы исключений
+	// ГЏГ®Г«ГјГ§Г®ГўГ ГІГҐГ«ГјГ±ГЄГЁГҐ ГЄГ«Г Г±Г±Г» ГЁГ±ГЄГ«ГѕГ·ГҐГ­ГЁГ©
 	class InvalidAddressException : public std::runtime_error {
 	public:
 		InvalidAddressException(const std::string& message) : std::runtime_error(message) {}
